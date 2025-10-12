@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Materials Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style for the placeholder text in contenteditable */
+        [contenteditable][placeholder]:empty:before {
+            content: attr(placeholder);
+            color: #9ca3af; /* gray-400 */
+            pointer-events: none;
+            display: block; /* For Firefox */
+        }
+        /* Custom scrollbar for a better look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f8fafc; /* slate-50 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #fca5a5; /* red-300 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f87171; /* red-400 */
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+
+    <div id="app" class="container mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <!-- Header Section -->
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-4xl sm:text-5xl font-bold text-red-700 mb-2">Red Hat System Administration</h1>
+        </header>
+
+        <!-- Main content list for study materials -->
+        <main id="materials-list" class="flex flex-col gap-4 max-w-4xl mx-auto">
+            <!-- Study material cards will be dynamically inserted here -->
+        </main>
+
+    </div>
+
+    <script>
+        // --- DATA ---
+        // Array of study materials with month, day, and Google Drive URL.
+        const studyMaterials = [
+            // July
+            { month: 'JULY', day: 16, url: 'https://drive.google.com/file/d/17C4neV9bPizPsAzXFh7B97-xPvOSQoGW/view' },
+            { month: 'JULY', day: 18, url: 'https://drive.google.com/file/d/1of96FOb0ZlqBFhkBbTnNcdhX5pdI9Ed6/view' },
+            { month: 'JULY', day: 21, url: 'https://drive.google.com/file/d/1hq7SaZ-paY790zWrX7Dxa9VwZsQW84AP/view' },
+            { month: 'JULY', day: 23, url: 'https://drive.google.com/file/d/1JJ1G_PKabcYyZM6DpacBs1vmWtUe4pjX/view' },
+            { month: 'JULY', day: 25, url: 'https://drive.google.com/file/d/1I-TVV3M-PyGDyrFFrWptpzAOgF1hLbzF/view' },
+            { month: 'JULY', day: 28, url: 'https://drive.google.com/file/d/1bmw2FEgyVZZYu01hGCdvNdDZBJSFv1Ug/view' },
+            { month: 'JULY', day: 30, url: 'https://drive.google.com/file/d/1auGmtoVfaZYUjuddYfuM3gEiCiXxOuXo/view' },
+            // August
+            { month: 'AUG', day: 1, url: 'https://drive.google.com/file/d/1n0qnyPJYoCK2flysC8G-2W5h3esnRxOz/view' },
+            { month: 'AUG', day: 4, url: 'https://drive.google.com/file/d/11htBAtiJGXPfKSy9bnPrV98WSZ3Vpkpd/view' },
+            { month: 'AUG', day: 6, url: 'https://drive.google.com/file/d/1uXctJasx3PNXSHTjx3QQVNs3_OTeN-v0/view' },
+            { month: 'AUG', day: 8, url: 'https://drive.google.com/file/d/1lbFiTa3w9NMIeSHfyPXb2UDpcmV2GGuF/view' },
+            { month: 'AUG', day: 11, url: 'https://drive.google.com/file/d/136DQH70SrzrAN3b9l9wmQ04PduxvP0Tl/view' },
+            { month: 'AUG', day: 13, url: 'https://drive.google.com/file/d/16OBdUmGUPSmRP5orfP-WEBNZkIJauXpe/view' },
+            { month: 'AUG', day: 15, url: 'https://drive.google.com/file/d/1wopeExQmYk5bP5E38u3ZWPMlHcsTzOr3/view' },
+            { month: 'AUG', day: 18, url: 'https://drive.google.com/file/d/1SiOlOf--qBVD7MHNVIPOc4ywy4Uydo8W/view?usp=drive_web' },
+            { month: 'AUG', day: 20, url: 'https://drive.google.com/file/d/1MGP4Z5OcTItqmrUAA40TLzlA4lHRtJSV/view' },
+            { month: 'AUG', day: 22, url: 'https://drive.google.com/file/d/1LNd5xiOr7VB5r0UpPf2S_6VJ1sxSwwZ9/view' },
+            { month: 'AUG', day: 25, url: 'https://drive.google.com/file/d/1pRCdWKDrxKUjQszZRA_TlaeDZDDLLaF-/view?usp=drive_web' },
+            { month: 'AUG', day: 27, url: 'https://drive.google.com/file/d/1e6p0OeGJTf5pmFZIGI01JQ0eo3-96-Ou/view' },
+            { month: 'AUG', day: 29, url: 'https://drive.google.com/file/d/1Ynvwc6Vy88gtE20JTYE0W6Bp7r1_LB_2/view' },
+            // September
+            { month: 'SEPT', day: 1, url: 'https://drive.google.com/file/d/1UlLlFaZCOVs79aPGtAoKZcBQ3-_1l7C4/view?usp=drive_web' },
+            { month: 'SEPT', day: 3, url: 'https://drive.google.com/file/d/1-rvkIyS1eZLvqVcEaFUjAd4lbbz2aVOj/view?usp=drive_web' },
+            { month: 'SEPT', day: 8, url: 'https://drive.google.com/file/d/1wN8HRCxb1_VLjknBQ0QVL0j2YfnWHHGC/view?usp=drive_web' },
+            { month: 'SEPT', day: 10, url: 'https://drive.google.com/file/d/17ar0roHPJbJX5ok_xpoLezHxojJgVGjo/view?usp=drive_web' }
+        ];
+
+        // --- DOM ELEMENTS ---
+        const materialsList = document.getElementById('materials-list');
+
+        // --- LOCAL STORAGE ---
+        // Function to get titles from localStorage
+        const getStoredTitles = () => {
+            try {
+                const titles = localStorage.getItem('studyMaterialTitles');
+                return titles ? JSON.parse(titles) : {};
+            } catch (error) {
+                console.error("Error reading titles from localStorage:", error);
+                return {};
+            }
+        };
+
+        // Function to save titles to localStorage
+        const saveTitles = (titles) => {
+            try {
+                localStorage.setItem('studyMaterialTitles', JSON.stringify(titles));
+            } catch (error) {
+                console.error("Error saving titles to localStorage:", error);
+            }
+        };
+
+        let storedTitles = getStoredTitles();
+        
+        // --- FUNCTIONS ---
+        // Function to render all the study material cards
+        const renderMaterials = () => {
+            materialsList.innerHTML = ''; // Clear the list before rendering
+
+            studyMaterials.forEach((material, index) => {
+                const cardId = `card-${index}`;
+                const title = storedTitles[cardId] || '';
+
+                // Create the card as a clickable anchor tag
+                const card = document.createElement('a');
+                card.href = material.url;
+                card.target = '_blank'; // Open link in a new tab
+                card.rel = 'noopener noreferrer';
+                card.className = 'bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between transition-all duration-300 hover:shadow-lg hover:border-red-300';
+                
+                // Card inner structure
+                card.innerHTML = `
+                    <div class="flex items-center gap-4 sm:gap-6 flex-grow">
+                        <div class="text-center w-16 flex-shrink-0">
+                            <div class="text-xs sm:text-sm font-semibold text-red-500 uppercase">${material.month}</div>
+                            <div class="text-xl sm:text-2xl font-bold text-red-700">${material.day}</div>
+                        </div>
+                        <div class="flex-grow">
+                            <h2 id="${cardId}" 
+                                contenteditable="true" 
+                                class="text-md sm:text-lg font-semibold text-gray-900 cursor-text focus:outline-none focus:ring-2 focus:ring-red-400 rounded px-2 py-1 -ml-2" 
+                                placeholder="Add a title...">${title}</h2>
+                        </div>
+                    </div>
+                    <div class="text-red-400 hover:text-red-600 flex-shrink-0 ml-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </div>
+                `;
+
+                materialsList.appendChild(card);
+                
+                const titleElement = document.getElementById(cardId);
+
+                // Prevent the card's link from firing when editing the title
+                titleElement.addEventListener('click', (e) => {
+                    e.preventDefault();
+                });
+                
+                // Save the title when the user finishes editing (on blur)
+                titleElement.addEventListener('blur', () => {
+                    // Directly update the title in our stored data object
+                    storedTitles[cardId] = titleElement.innerText.trim();
+                    // Save the entire updated object to the browser's local storage
+                    saveTitles(storedTitles);
+                });
+            });
+        };
+
+        // --- INITIALIZATION ---
+        // Render the materials when the page loads.
+        document.addEventListener('DOMContentLoaded', renderMaterials);
+
+    </script>
+</body>
+</html>
+
