@@ -1,6 +1,6 @@
 # Online Class Video Website
 
-I made this simple website using ##Gemini## to organize our online class videos.  
+I made this simple website using #Gemini# to organize our online class videos.  
 Earlier, the videos were sent through email, and it was hard for students to find them.  
 So I arranged all the videos in one place and shared the website link in our class group.
 
